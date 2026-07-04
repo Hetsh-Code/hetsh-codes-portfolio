@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-neon-lime: #A6FF00;
+  --color-crimson-red: #FF2D55;
+  --color-electric-purple: #8A2EFF;
+  --color-matte-black: #050505;
+  --color-charcoal: #101010;
+  --color-graphite: #181818;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-matte-black);
+    color: #ffffff;
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+    cursor: none; /* Hide default cursor to support custom cursor */
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #050505;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #202020;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a6ff00;
+  }
+}
+
+@layer utilities {
+  .text-glow-lime {
+    text-shadow: 0 0 10px rgba(166, 255, 0, 0.4), 0 0 20px rgba(166, 255, 0, 0.2);
+  }
+  .text-glow-purple {
+    text-shadow: 0 0 10px rgba(138, 46, 255, 0.4), 0 0 20px rgba(138, 46, 255, 0.2);
+  }
+  .text-glow-red {
+    text-shadow: 0 0 10px rgba(255, 45, 85, 0.4), 0 0 20px rgba(255, 45, 85, 0.2);
+  }
+
+  .border-glow-lime {
+    box-shadow: 0 0 15px rgba(166, 255, 0, 0.15), inset 0 0 15px rgba(166, 255, 0, 0.05);
+  }
+  .border-glow-purple {
+    box-shadow: 0 0 15px rgba(138, 46, 255, 0.15), inset 0 0 15px rgba(138, 46, 255, 0.05);
+  }
+  .border-glow-red {
+    box-shadow: 0 0 15px rgba(255, 45, 85, 0.15), inset 0 0 15px rgba(255, 45, 85, 0.05);
+  }
+
+  .glassmorphism {
+    background: rgba(16, 16, 16, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .glassmorphism-premium {
+    background: linear-gradient(135deg, rgba(20, 20, 20, 0.7) 0%, rgba(5, 5, 5, 0.8) 100%);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  }
+
+  .neumorphism-dark {
+    background: #101010;
+    box-shadow: 4px 4px 10px #050505, -4px -4px 10px #1b1b1b;
+  }
+
+  .neumorphism-dark-inset {
+    background: #101010;
+    box-shadow: inset 2px 2px 5px #050505, inset -2px -2px 5px #1b1b1b;
+  }
+}
+
+/* Base custom animations */
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 8s infinite ease-in-out;
+}
+
+@keyframes gridMove {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 40px 40px;
+  }
+}
+
+.animate-grid-move {
+  animation: gridMove 20s linear infinite;
+}
+
+/* Custom background grid styling */
+.grid-bg {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}
