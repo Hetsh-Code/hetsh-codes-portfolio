@@ -55,6 +55,7 @@ export default function Navbar({
   const navLinks = [
     { id: 'home', label: 'Home' },
     { id: 'about', label: 'About' },
+    { id: 'resume', label: 'Resume' },
     { id: 'skills', label: 'Skills' },
     { id: 'portfolio', label: 'Portfolio' },
     { id: 'services', label: 'Services' },

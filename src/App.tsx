@@ -4,6 +4,7 @@ import Background from './components/Background';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
+import Resume from './components/Resume';
 import Skills from './components/Skills';
 import Portfolio from './components/Portfolio';
 import Services from './components/Services';
@@ -23,7 +24,7 @@ export default function App() {
   // Monitor scroll height to trigger Navbar Active Section highlights automatically
   useEffect(() => {
     const handleScrollUpdate = () => {
-      const sections = ['home', 'about', 'skills', 'portfolio', 'services', 'experience', 'testimonials', 'contact'];
+      const sections = ['home', 'about', 'resume', 'skills', 'portfolio', 'services', 'experience', 'testimonials', 'contact'];
       const scrollPos = window.scrollY + 200; // Trigger slightly before the section hits top
 
       for (const sectionId of sections) {
@@ -91,6 +92,9 @@ export default function App() {
 
         {/* 5. Asymmetric Bento Biography */}
         <About />
+
+        {/* 5.5 Interactive Briefcase Resume Section */}
+        <Resume />
 
         {/* 6. Glowing Circular Software Dashboard */}
         <Skills />
