@@ -106,7 +106,9 @@ export default function Portfolio() {
               <div
                 key={project.id}
                 onClick={() => setSelectedProject(project)}
-                className={`glassmorphism-premium rounded-3xl p-6 border border-white/5 transition-all duration-500 transform hover:-translate-y-2.5 cursor-pointer flex flex-col group overflow-hidden ${glowColor}`}
+                className={`glassmorphism-premium rounded-3xl p-6 border border-white/5 cursor-pointer flex flex-col group overflow-hidden premium-card-3d ${
+                  project.category === 'Logo Design' ? 'premium-card-3d-lime' : project.category === 'Packaging' ? 'premium-card-3d-red' : 'premium-card-3d-purple'
+                } ${glowColor}`}
               >
                 {/* Visual Glass Header Card Mockup (Static placeholder representation) */}
                 <div className={`w-full h-48 rounded-2xl bg-gradient-to-tr ${project.thumbnailGradient} border border-white/5 relative overflow-hidden mb-6 flex items-center justify-center`}>

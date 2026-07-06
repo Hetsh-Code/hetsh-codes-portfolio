@@ -20,11 +20,9 @@ export default function Navbar({
   setThemePreset,
 }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const [scrolled, setScrolled] = useState(false);
 
-  // Monitor scroll to handle Auto-Hide on scroll down & Show on scroll up
+  // Monitor scroll to handle transparent to dense glass background
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -35,22 +33,14 @@ export default function Navbar({
       } else {
         setScrolled(false);
       }
-
-      if (currentScrollY < 100) {
-        setIsVisible(true);
-      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        // Scrolling down -> Hide navbar
-        setIsVisible(false);
-      } else {
-        // Scrolling up -> Show navbar
-        setIsVisible(true);
-      }
-      setLastScrollY(currentScrollY);
     };
+
+    // Run once on load
+    handleScroll();
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, []);
 
   const navLinks = [
     { id: 'home', label: 'Home' },
@@ -90,9 +80,7 @@ export default function Navbar({
   return (
     <nav
       id="main-navigation"
-      className={`fixed top-0 left-0 right-0 z-40 px-4 md:px-8 py-4 transition-all duration-500 ease-in-out ${
-        isVisible ? 'translate-y-0' : '-translate-y-28'
-      }`}
+      className="fixed top-0 left-0 right-0 z-50 px-4 md:px-8 py-4 transition-all duration-300 ease-in-out"
     >
       <div
         className={`max-w-7xl mx-auto rounded-2xl transition-all duration-300 ${

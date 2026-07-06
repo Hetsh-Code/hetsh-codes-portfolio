@@ -149,17 +149,14 @@ export default function Services() {
             return (
               <a
                 key={service.id}
-                href="https://www.linkedin.com/in/hetshcode/"
+                href="https://discord.gg/b4UjXU83Rh"
                 target="_blank"
                 rel="noopener noreferrer"
                 onMouseEnter={() => setHoveredId(service.id)}
                 onMouseLeave={() => setHoveredId(null)}
-                className={`glassmorphism-premium rounded-3xl p-6 border border-white/5 transition-all duration-500 transform hover:-translate-y-2 flex flex-col justify-between group overflow-hidden select-none cursor-pointer no-underline ${
-                  isHovered ? accentClass : ''
-                }`}
-                style={{
-                  boxShadow: isHovered ? `0 15px 30px ${bgGlow}` : ''
-                }}
+                className={`glassmorphism-premium rounded-3xl p-6 border border-white/5 flex flex-col justify-between group overflow-hidden select-none cursor-pointer no-underline premium-card-3d ${
+                  service.accent === 'lime' ? 'premium-card-3d-lime' : service.accent === 'purple' ? 'premium-card-3d-purple' : 'premium-card-3d-red'
+                } ${isHovered ? accentClass : ''}`}
               >
                 {/* Visual Glass Glow Layer inside card */}
                 <div className="absolute top-0 right-0 w-24 h-24 bg-white/[0.01] rounded-bl-full pointer-events-none" />

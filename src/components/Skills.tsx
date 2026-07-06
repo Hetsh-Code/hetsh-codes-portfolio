@@ -93,12 +93,9 @@ export default function Skills() {
                       key={skill.id}
                       onMouseEnter={() => setHoveredSkillId(skill.id)}
                       onMouseLeave={() => setHoveredSkillId(null)}
-                      className={`glassmorphism-premium rounded-2xl p-6 flex flex-col items-center justify-center text-center transition-all duration-500 transform border border-white/5 relative group cursor-pointer ${
-                        isHovered ? `-translate-y-2 border-white/15 scale-105 ${borderGlow}` : ''
-                      }`}
-                      style={{
-                        boxShadow: isHovered ? `0 15px 30px ${bgGlow}` : ''
-                      }}
+                      className={`glassmorphism-premium rounded-2xl p-6 flex flex-col items-center justify-center text-center border border-white/5 relative group cursor-pointer premium-card-3d ${
+                        skill.color === 'purple' ? 'premium-card-3d-purple' : skill.color === 'red' ? 'premium-card-3d-red' : 'premium-card-3d-lime'
+                      } ${isHovered ? borderGlow : ''}`}
                     >
                       {/* Interactive Circular Progress Meter */}
                       <div className="relative w-24 h-24 mb-4 flex items-center justify-center">
@@ -198,7 +195,9 @@ export default function Skills() {
                       key={skill.id}
                       onMouseEnter={() => setHoveredSkillId(skill.id)}
                       onMouseLeave={() => setHoveredSkillId(null)}
-                      className="glassmorphism rounded-xl p-5 border border-white/5 hover:border-white/10 transition-all duration-300 relative group"
+                      className={`glassmorphism rounded-xl p-5 border border-white/5 relative group premium-card-3d ${
+                        skill.color === 'purple' ? 'premium-card-3d-purple' : skill.color === 'red' ? 'premium-card-3d-red' : 'premium-card-3d-lime'
+                      }`}
                     >
                       <div className="flex items-center justify-between mb-3.5">
                         <span className="font-display font-bold text-sm text-white group-hover:translate-x-1 transition-transform duration-300 flex items-center gap-2">

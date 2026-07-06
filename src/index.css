@@ -75,6 +75,46 @@
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
   }
 
+  /* Premium 3D & Depth Utilities */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  /* Tactile lift on hover with real 3D shadows */
+  .premium-card-3d {
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.5s;
+    transform: translateZ(0px) rotateX(0deg) rotateY(0deg);
+  }
+
+  .premium-card-3d:hover {
+    transform: translateZ(20px) scale(1.02);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(138, 46, 255, 0.15);
+    border-color: rgba(166, 255, 0, 0.3);
+  }
+
+  .premium-card-3d-lime:hover {
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(166, 255, 0, 0.15);
+    border-color: rgba(166, 255, 0, 0.4);
+  }
+
+  .premium-card-3d-purple:hover {
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(138, 46, 255, 0.15);
+    border-color: rgba(138, 46, 255, 0.4);
+  }
+
+  .premium-card-3d-red:hover {
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 45, 85, 0.15);
+    border-color: rgba(255, 45, 85, 0.4);
+  }
+
   .neumorphism-dark {
     background: #101010;
     box-shadow: 4px 4px 10px #050505, -4px -4px 10px #1b1b1b;

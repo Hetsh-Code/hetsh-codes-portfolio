@@ -12,11 +12,22 @@ export default function Resume() {
   const [isDraggingPDF, setIsDraggingPDF] = useState(false);
   const [pdfPosition, setPdfPosition] = useState(0); // tracking scroll/drag position for UI feedback
   
+  // Fold & Paper Plane States
+  const [foldingState, setFoldingState] = useState<'idle' | 'creasing' | 'folding' | 'plane' | 'flying' | 'flown'>('idle');
+  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; color: string; scale: number; speedX: number; speedY: number }>>([]);
+  const [dragThresholdReached, setDragThresholdReached] = useState(false);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const pdfRef = useRef<HTMLDivElement>(null);
 
   // Triggering the unzipping sequence
   const handleZipToggle = () => {
+    // If the resume has already flown, let them reset
+    if (foldingState === 'flown') {
+      handleRecallResume();
+      return;
+    }
+
     if (isUnzipped) {
       // Re-zip
       setIsUnzipped(false);
@@ -49,6 +60,130 @@ export default function Resume() {
   // Dragging the PDF sheet
   const handlePDFDrag = (event: any, info: any) => {
     setPdfPosition(info.point.y);
+
+    if (pdfRef.current && foldingState === 'idle') {
+      const transform = window.getComputedStyle(pdfRef.current).transform;
+      let currentY = 0;
+      if (transform && transform !== 'none') {
+        const matrix = new DOMMatrix(transform);
+        currentY = matrix.m42;
+      }
+      
+      // If pulled up near the top constraint (e.g. currentY <= -520), trigger threshold
+      if (currentY <= -520) {
+        setDragThresholdReached(true);
+      } else {
+        setDragThresholdReached(false);
+      }
+    }
+  };
+
+  const handlePDFDragEnd = () => {
+    setIsDraggingPDF(false);
+    if (dragThresholdReached && foldingState === 'idle') {
+      startFoldingSequence();
+    }
+  };
+
+  // Sparkles Trail Generation
+  const spawnSparkles = () => {
+    const colors = ['#A6FF00', '#00E5FF', '#8A2EFF', '#FF2D55'];
+    const newParticles = Array.from({ length: 30 }).map((_, i) => ({
+      id: Math.random() + i,
+      x: (Math.random() - 0.5) * 50,
+      y: (Math.random() - 0.5) * 50,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      scale: Math.random() * 1.5 + 0.6,
+      speedX: (Math.random() - 0.5) * 14,
+      speedY: (Math.random() - 0.5) * 14 - 3,
+    }));
+    setParticles(newParticles);
+    
+    // Animate sparkles dropping with gravity
+    let frame = 0;
+    const interval = setInterval(() => {
+      setParticles(prev => 
+        prev.map(p => ({
+          ...p,
+          x: p.x + p.speedX,
+          y: p.y + p.speedY,
+          speedY: p.speedY + 0.18, // subtle gravity pull
+          scale: Math.max(0, p.scale - 0.02)
+        })).filter(p => p.scale > 0)
+      );
+      frame++;
+      if (frame > 65) {
+        clearInterval(interval);
+      }
+    }, 16);
+  };
+
+  // Start folding sequence
+  const startFoldingSequence = () => {
+    setFoldingState('creasing');
+    setDragThresholdReached(false);
+    
+    // Step 1: Diagonal Creases (1 second)
+    setTimeout(() => {
+      setFoldingState('folding');
+      
+      // Step 2: Shrinking and folding to 0 (1 second)
+      setTimeout(() => {
+        setFoldingState('plane');
+        spawnSparkles();
+      }, 1000);
+    }, 1000);
+  };
+
+  // Launch Paper Plane
+  const handleLaunchPlane = () => {
+    if (foldingState !== 'plane') return;
+    setFoldingState('flying');
+    
+    // Spawn active trailing particles during flight
+    let count = 0;
+    const trailInterval = setInterval(() => {
+      if (count > 25) {
+        clearInterval(trailInterval);
+        return;
+      }
+      setParticles(prev => [
+        ...prev,
+        {
+          id: Math.random() + count,
+          x: (Math.random() - 0.5) * 20,
+          y: (Math.random() - 0.5) * 20 - 10,
+          color: ['#A6FF00', '#00E5FF', '#8A2EFF', '#FF2D55'][Math.floor(Math.random() * 4)],
+          scale: Math.random() * 1.6 + 0.8,
+          speedX: (Math.random() - 0.5) * 10 - 6,
+          speedY: (Math.random() - 0.5) * 10 + 4,
+        }
+      ]);
+      count++;
+    }, 45);
+
+    // Transition to fully flown after fly-away completes
+    setTimeout(() => {
+      setFoldingState('flown');
+    }, 1500);
+  };
+
+  // Recall Paper Plane
+  const handleRecallResume = () => {
+    setFoldingState('plane'); // fly back in
+    
+    setTimeout(() => {
+      setFoldingState('folding');
+      
+      setTimeout(() => {
+        setFoldingState('creasing');
+        
+        setTimeout(() => {
+          setFoldingState('idle');
+          setIsUnzipped(true);
+        }, 800);
+      }, 800);
+    }, 1200);
   };
 
   // Simulated download
@@ -117,28 +252,49 @@ export default function Resume() {
                 </div>
               </div>
 
-              {/* 2. THE PDF SHEET (z-25) - Emerging halfway when unzipped, draggable, with high z-index to overlay top elements when dragged */}
-              <motion.div 
-                ref={pdfRef}
-                drag={isUnzipped ? "y" : false}
-                dragConstraints={{ top: -950, bottom: 210 }}
-                dragElastic={0.08}
-                dragMomentum={true}
-                onDrag={handlePDFDrag}
-                onDragStart={() => setIsDraggingPDF(true)}
-                onDragEnd={() => setIsDraggingPDF(false)}
-                initial={{ y: 550 }}
-                animate={{ 
-                  y: isUnzipped ? 120 : 550 
-                }}
-                transition={{ 
-                  type: "spring", 
-                  stiffness: 70, 
-                  damping: 15 
-                }}
-                className={`absolute w-full max-w-[670px] bg-[#fdfdfd] shadow-[0_-15px_30px_rgba(0,0,0,0.5)] rounded-2xl z-25 select-text overflow-hidden text-zinc-900 cursor-grab active:cursor-grabbing border border-zinc-200`}
-                style={{ height: '1200px' }}
-              >
+              {/* 2. THE PDF SHEET (z-25) - Contained in an overflow-hidden wrapper so it doesn't overlay on the box or rest of website */}
+              <div className="absolute inset-0 overflow-hidden rounded-b-3xl z-25 pointer-events-none flex justify-center">
+                <motion.div 
+                  ref={pdfRef}
+                  drag={isUnzipped && foldingState === 'idle' ? "y" : false}
+                  dragConstraints={{ top: -650, bottom: 210 }}
+                  dragElastic={0.08}
+                  dragMomentum={true}
+                  onDrag={handlePDFDrag}
+                  onDragStart={() => setIsDraggingPDF(true)}
+                  onDragEnd={handlePDFDragEnd}
+                  initial={{ y: 550, scale: 1, rotateX: 0, rotateY: 0, rotateZ: 0, opacity: 1 }}
+                  animate={
+                    foldingState === 'creasing'
+                      ? { scale: 0.85, rotateX: 25, rotateY: 10, y: -150, opacity: 0.95 }
+                      : foldingState === 'folding'
+                      ? { scaleX: 0.03, scaleY: 0.2, rotateY: 88, rotateZ: 35, y: -250, opacity: 0.15 }
+                      : foldingState === 'plane' || foldingState === 'flying' || foldingState === 'flown'
+                      ? { scale: 0, opacity: 0, y: -400 }
+                      : { y: isUnzipped ? 120 : 550, scale: 1, rotateX: 0, rotateY: 0, rotateZ: 0, opacity: 1 }
+                  }
+                  transition={
+                    foldingState === 'creasing'
+                      ? { duration: 1, ease: "easeInOut" }
+                      : foldingState === 'folding'
+                      ? { duration: 1, ease: "easeInOut" }
+                      : { 
+                          type: "spring", 
+                          stiffness: 70, 
+                          damping: 15 
+                        }
+                  }
+                  className={`absolute w-full max-w-[670px] bg-[#fdfdfd] shadow-[0_-15px_30px_rgba(0,0,0,0.5)] rounded-2xl select-text overflow-hidden text-zinc-900 cursor-grab active:cursor-grabbing border border-zinc-200 pointer-events-auto`}
+                  style={{ height: '1200px', transformStyle: 'preserve-3d' }}
+                >
+                {/* 3D Folding Crease Line Overlays */}
+                {foldingState === 'creasing' && (
+                  <div className="absolute inset-0 z-50 pointer-events-none overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#A6FF00] to-transparent rotate-45 origin-top-left scale-150 shadow-[0_0_8px_#A6FF00] animate-pulse" />
+                    <div className="absolute top-0 right-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#00E5FF] to-transparent -rotate-45 origin-top-right scale-150 shadow-[0_0_8px_#00E5FF] animate-pulse" />
+                  </div>
+                )}
+
                 {/* Subtle Printable Watermark Grid background */}
                 <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none opacity-50" />
 
@@ -324,6 +480,165 @@ export default function Resume() {
 
                 </div>
               </motion.div>
+              </div>
+
+              {/* Drag release threshold overlay banner */}
+              {dragThresholdReached && foldingState === 'idle' && (
+                <div className="absolute top-12 left-1/2 -translate-x-1/2 z-50 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#A6FF00] to-emerald-400 text-black font-display font-black text-xs uppercase tracking-widest animate-bounce shadow-[0_0_20px_#A6FF00] pointer-events-none select-none">
+                  ✨ RELEASE DRAG TO FOLD & FLY AWAY! ✈️
+                </div>
+              )}
+
+              {/* Particle Trail Overlay */}
+              {particles.map(p => (
+                <div
+                  key={p.id}
+                  className="absolute pointer-events-none rounded-full blur-[0.5px]"
+                  style={{
+                    backgroundColor: p.color,
+                    width: `${p.scale * 6}px`,
+                    height: `${p.scale * 6}px`,
+                    left: `calc(50% + ${p.x}px)`,
+                    top: `calc(35% + ${p.y}px)`,
+                    opacity: p.scale,
+                    boxShadow: `0 0 10px ${p.color}`,
+                    zIndex: 45,
+                    transition: 'opacity 0.1s ease'
+                  }}
+                />
+              ))}
+
+              {/* 2.5 DYNAMIC PAPER PLANE LAYER (z-40) */}
+              {(foldingState === 'plane' || foldingState === 'flying') && (
+                <motion.div
+                  initial={{ scale: 0.1, y: 150, opacity: 0, rotateZ: -45 }}
+                  animate={
+                    foldingState === 'flying'
+                      ? {
+                          x: [0, -60, 900],
+                          y: [120, 180, -900],
+                          scale: [1, 1.15, 0.05],
+                          rotateZ: [0, -15, 45],
+                          rotateY: [0, 10, 65],
+                          opacity: [1, 1, 0],
+                        }
+                      : {
+                          scale: 1,
+                          y: 120,
+                          x: 0,
+                          opacity: 1,
+                          rotateZ: 0,
+                          rotateY: 0,
+                        }
+                  }
+                  transition={
+                    foldingState === 'flying'
+                      ? {
+                          duration: 1.5,
+                          times: [0, 0.2, 1],
+                          ease: [0.25, 1, 0.5, 1],
+                        }
+                      : { type: "spring", stiffness: 100, damping: 15 }
+                  }
+                  className="absolute z-50 cursor-pointer pointer-events-auto flex flex-col items-center select-none"
+                  onClick={handleLaunchPlane}
+                >
+                  {/* Glowing Ring effect around plane */}
+                  <div className="absolute -inset-4 bg-gradient-to-r from-[#A6FF00]/10 to-[#00E5FF]/10 blur-xl rounded-full animate-pulse pointer-events-none" />
+
+                  {/* Neon Cyber Paper Plane SVG */}
+                  <svg viewBox="0 0 100 100" className="w-48 h-48 drop-shadow-[0_0_20px_rgba(166,255,0,0.55)]">
+                    <defs>
+                      <linearGradient id="planeLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#A6FF00" />
+                        <stop offset="100%" stopColor="#00E5FF" />
+                      </linearGradient>
+                      <linearGradient id="planeRight" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#00E5FF" />
+                        <stop offset="100%" stopColor="#8A2EFF" />
+                      </linearGradient>
+                      <linearGradient id="planeBottom" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#111319" />
+                        <stop offset="100%" stopColor="#FF2D55" />
+                      </linearGradient>
+                    </defs>
+                    
+                    {/* Left Wing */}
+                    <path d="M 50,15 L 12,70 L 50,60 Z" fill="url(#planeLeft)" />
+                    {/* Right Wing */}
+                    <path d="M 50,15 L 88,70 L 50,60 Z" fill="url(#planeRight)" />
+                    {/* Left Inner fold shade */}
+                    <path d="M 50,15 L 50,60 L 35,70 Z" fill="#090d16" opacity="0.65" />
+                    {/* Right Inner fold shade */}
+                    <path d="M 50,15 L 50,60 L 65,70 Z" fill="#090d16" opacity="0.4" />
+                    {/* Keel bottom highlight */}
+                    <path d="M 50,60 L 50,75 L 45,67 Z" fill="url(#planeBottom)" />
+                  </svg>
+
+                  {/* Paper Plane interactive tag */}
+                  {foldingState === 'plane' && (
+                    <div className="px-3 py-1 bg-black/80 border border-[#A6FF00]/40 rounded-full text-[9px] font-mono font-black uppercase text-[#A6FF00] tracking-wider animate-bounce shadow-lg mt-[-10px] backdrop-blur-sm">
+                      Click to Launch! 🚀
+                    </div>
+                  )}
+                </motion.div>
+              )}
+
+              {/* FLOWN SUCCESS STATUS PANEL */}
+              {foldingState === 'flown' && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9, y: 50 }}
+                  animate={{ opacity: 1, scale: 1, y: 120 }}
+                  transition={{ type: "spring", stiffness: 100, damping: 15 }}
+                  className="absolute w-full max-w-[650px] p-8 rounded-2xl bg-gradient-to-b from-[#0e1615] to-[#04060b] border border-[#A6FF00]/20 shadow-[0_20px_50px_rgba(166,255,0,0.15)] z-25 text-center flex flex-col items-center justify-center min-h-[420px]"
+                >
+                  {/* Outer glowing orbital rings representing telemetry */}
+                  <div className="w-20 h-20 rounded-full border border-[#A6FF00]/40 flex items-center justify-center mb-6 relative">
+                    <div className="absolute inset-0 rounded-full border border-dashed border-[#00E5FF]/30 animate-spin" style={{ animationDuration: '10s' }} />
+                    <Sparkles className="w-8 h-8 text-[#A6FF00] animate-pulse" />
+                  </div>
+
+                  <span className="font-mono text-[9px] text-[#A6FF00] font-bold tracking-widest uppercase mb-1.5">// NEON_PLANE_LAUNCH_SYSTEM v1.0</span>
+                  <h3 className="font-display font-black text-2xl md:text-3xl text-white tracking-tight leading-none mb-3">
+                    RESUME LAUNCHED TO SPACE! ☁️
+                  </h3>
+                  <p className="text-gray-400 text-xs md:text-sm max-w-md leading-relaxed mb-8">
+                    Your customized resume spec-sheet was beautifully folded into a tactical 3D paper plane and sent soaring across the cloud network.
+                  </p>
+
+                  {/* Launch details stats panel */}
+                  <div className="grid grid-cols-3 gap-4 w-full max-w-sm mb-8 font-mono text-[10px] border-t border-b border-white/5 py-4">
+                    <div className="flex flex-col items-center">
+                      <span className="text-gray-500 uppercase">Velocity</span>
+                      <strong className="text-white text-xs mt-0.5">850 KM/S</strong>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <span className="text-gray-500 uppercase">Orbit</span>
+                      <strong className="text-[#00E5FF] text-xs mt-0.5">STRATOSPHERE</strong>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <span className="text-gray-500 uppercase">Package</span>
+                      <strong className="text-[#A6FF00] text-xs mt-0.5">HETSH_v3.PDF</strong>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-4 justify-center pointer-events-auto text-zinc-100">
+                    <button
+                      onClick={handleRecallResume}
+                      className="px-5 py-2.5 rounded-full bg-white/5 border border-white/10 hover:border-[#A6FF00] text-white font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2"
+                    >
+                      Recall Paper Plane 🛩️
+                    </button>
+                    
+                    <button
+                      onClick={handleDownload}
+                      className="px-5 py-2.5 rounded-full bg-[#A6FF00] hover:bg-[#A6FF00]/80 text-black font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5"
+                    >
+                      <ArrowDownToLine className="w-3.5" /> Direct PDF Download
+                    </button>
+                  </div>
+                </motion.div>
+              )}
 
               {/* 3. BAG FRONT PANEL (z-30) - The outer shell containing the sliding zipper */}
               <div className="absolute inset-x-0 bottom-0 h-[480px] z-30 pointer-events-none select-none">

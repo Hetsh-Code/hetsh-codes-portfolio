@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Mail, Send, CheckCircle2, AlertCircle, Linkedin, Instagram, ArrowUpRight, MessageSquare, ExternalLink, RefreshCw } from 'lucide-react';
+import { Mail, Send, CheckCircle2, AlertCircle, Linkedin, Instagram, ArrowUpRight, MessageSquare, ExternalLink, RefreshCw, MessageCircle } from 'lucide-react';
 
 interface FormState {
   name: string;
@@ -223,7 +223,7 @@ export default function Contact() {
           
           {/* LEFT: GLASS CONTACT FORM */}
           <div className="lg:col-span-7">
-            <div className="glassmorphism-premium rounded-3xl p-6 md:p-8 border border-white/5 relative border-glow-red">
+            <div className="glassmorphism-premium rounded-3xl p-6 md:p-8 border border-white/5 relative border-glow-red premium-card-3d premium-card-3d-red cursor-pointer">
               <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#FF2D55]/30 to-transparent" />
               
               {!submitSuccess ? (
@@ -405,7 +405,7 @@ export default function Contact() {
           <div className="lg:col-span-5 flex flex-col items-center gap-6 text-center lg:text-left">
             
             {/* Interactive globe wrapper */}
-            <div className="relative w-full max-w-sm aspect-square glassmorphism rounded-3xl p-4 flex items-center justify-center border border-white/5 shadow-2xl relative overflow-hidden group">
+            <div className="relative w-full max-w-sm aspect-square glassmorphism rounded-3xl p-4 flex items-center justify-center border border-white/5 shadow-2xl overflow-hidden group premium-card-3d premium-card-3d-lime cursor-pointer">
               <div className="absolute inset-x-0 bottom-4 text-center z-10 pointer-events-none">
                 <span className="font-mono text-[9px] tracking-widest text-[#A6FF00] font-bold uppercase block">
                   // HU VECTOR INTAKE NETWORK
@@ -422,7 +422,7 @@ export default function Contact() {
             </div>
 
             {/* Direct Connect Station */}
-            <div className="w-full max-w-sm glassmorphism rounded-2xl p-5 border border-white/5 text-left flex flex-col gap-4">
+            <div className="w-full max-w-sm glassmorphism rounded-2xl p-5 border border-white/5 text-left flex flex-col gap-4 premium-card-3d premium-card-3d-purple cursor-pointer">
               <span className="font-mono text-[9px] text-[#FF2D55] font-bold uppercase tracking-wider block">// DIRECT CHANNELS</span>
               
               {/* Channel 1: Email */}
@@ -456,6 +456,25 @@ export default function Contact() {
                   <div>
                     <span className="block font-sans text-xs font-bold text-white">WhatsApp Briefing Link</span>
                     <span className="block font-mono text-[9px] text-gray-500 mt-0.5">+91 90237 20637</span>
+                  </div>
+                </div>
+                <ArrowUpRight className="w-3.5 h-3.5 text-gray-500 group-hover:text-white transition-colors" />
+              </a>
+
+              {/* Channel 3: Google Chat */}
+              <a 
+                href="https://chat.google.com/room/AAQAWX-rSMY?cls=7" 
+                target="_blank"
+                rel="noreferrer"
+                className="flex justify-between items-center bg-black/40 p-3.5 rounded-xl border border-white/5 hover:border-[#00E5FF] group transition-all"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-[#00E5FF]/10 text-[#00E5FF] group-hover:scale-105 transition-transform">
+                    <MessageCircle className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="block font-sans text-xs font-bold text-white">Google Chat Inquiry</span>
+                    <span className="block font-mono text-[9px] text-gray-500 mt-0.5">Direct Chat Room</span>
                   </div>
                 </div>
                 <ArrowUpRight className="w-3.5 h-3.5 text-gray-500 group-hover:text-white transition-colors" />

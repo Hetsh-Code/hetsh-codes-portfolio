@@ -88,7 +88,7 @@ export default function About() {
           <div className="lg:col-span-8 flex flex-col gap-6">
             
             {/* Bio Card */}
-            <div className="glassmorphism-premium rounded-3xl p-6 md:p-8 border border-white/5 relative overflow-hidden">
+            <div className="glassmorphism-premium rounded-3xl p-6 md:p-8 border border-white/5 relative overflow-hidden premium-card-3d premium-card-3d-purple cursor-pointer">
               <div className="absolute top-0 right-0 p-4 opacity-5">
                 <Workflow className="w-48 h-48" />
               </div>
@@ -107,7 +107,7 @@ export default function About() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               
               {/* Mission & Vision Card */}
-              <div className="glassmorphism rounded-2xl p-6 border border-white/5 relative flex flex-col justify-between">
+              <div className="glassmorphism rounded-2xl p-6 border border-white/5 relative flex flex-col justify-between premium-card-3d premium-card-3d-lime cursor-pointer">
                 <div>
                   <div className="w-10 h-10 rounded-lg bg-[#8A2EFF]/10 border border-[#8A2EFF]/20 flex items-center justify-center mb-4">
                     <Target className="w-5 h-5 text-[#8A2EFF]" />
@@ -130,7 +130,7 @@ export default function About() {
               </div>
 
               {/* Core Strengths Card */}
-              <div className="glassmorphism rounded-2xl p-6 border border-white/5 relative">
+              <div className="glassmorphism rounded-2xl p-6 border border-white/5 relative premium-card-3d premium-card-3d-red cursor-pointer">
                 <div className="w-10 h-10 rounded-lg bg-[#FF2D55]/10 border border-[#FF2D55]/20 flex items-center justify-center mb-4">
                   <Award className="w-5 h-5 text-[#FF2D55]" />
                 </div>
@@ -148,7 +148,7 @@ export default function About() {
             </div>
 
             {/* Workflow Timeline Block */}
-            <div className="glassmorphism rounded-3xl p-6 md:p-8 border border-white/5 mt-2">
+            <div className="glassmorphism rounded-3xl p-6 md:p-8 border border-white/5 mt-2 premium-card-3d premium-card-3d-lime cursor-pointer">
               <h4 className="font-display font-bold text-lg text-white mb-6 flex items-center gap-2">
                 <Workflow className="w-5 h-5 text-[#A6FF00]" />
                 Creative Workflow Strategy
@@ -177,7 +177,7 @@ export default function About() {
           {/* RIGHT SIDE: Animate Counters & Floating Badges */}
           <div className="lg:col-span-4 flex flex-col gap-6 w-full">
             {/* Visual Experience Counters Panel */}
-            <div className="glassmorphism-premium rounded-3xl p-6 border border-white/10 flex flex-col gap-6 border-glow-lime">
+            <div className="glassmorphism-premium rounded-3xl p-6 border border-white/10 flex flex-col gap-6 border-glow-lime premium-card-3d premium-card-3d-lime cursor-pointer">
               <span className="font-mono text-[9px] text-[#A6FF00] font-bold tracking-widest uppercase">
                 // SYSTEM TELEMETRY
               </span>
@@ -197,7 +197,7 @@ export default function About() {
             </div>
 
             {/* Floating Holographic Asset Box */}
-            <div className="glassmorphism rounded-3xl p-6 border border-white/5 relative overflow-hidden flex flex-col items-center text-center">
+            <div className="glassmorphism rounded-3xl p-6 border border-white/5 relative overflow-hidden flex flex-col items-center text-center premium-card-3d premium-card-3d-purple cursor-pointer">
               {/* Spinning geometric wireframe background */}
               <div className="absolute inset-0 flex items-center justify-center opacity-5 select-none">
                 <svg className="w-64 h-64 text-white animate-spin" style={{ animationDuration: '30s' }} viewBox="0 0 100 100">
